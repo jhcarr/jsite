@@ -21,7 +21,7 @@
       (session/wrap-session)
       (basic/wrap-basic-authentication authenticated?)))
 
-(defn enlive-bootstrap-layout
+(defn default-layout
   "Wraps an argument with a valid site page."
   [body]
   (->> body
@@ -37,8 +37,8 @@
        {:status 200
         :headers {"Content-Type" "text/plain"}
         :body (pr-str ["Hello" :from 'Heroku])})
-  (GET "/bootstrap" []
-       enlive-bootstrap-layout "Greetings from the views directory!")
+  (GET "/magic" []
+       (default-layout "Greetings from the views directory!"))
   (ANY "*" []
        (route/not-found (slurp (io/resource "404.html")))))
 
