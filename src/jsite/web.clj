@@ -34,13 +34,10 @@
   (ANY "/repl" {:as req}
        (drawbridge req))
   (GET "/" []
-       {:status 200
-        :headers {"Content-Type" "text/plain"}
-        :body (pr-str ["Hello" :from 'Heroku])})
-  (GET "/magic" []
-       (default-layout "Greetings from the views directory!"))
-  (ANY "*" []
-       (route/not-found (slurp (io/resource "404.html")))))
+       (default-layout "Root page."))
+  (route/resources "/")
+  (route/not-found (slurp (io/resource "404.html")))
+  )
 
 (defn wrap-error-page [handler]
   (fn [req]
