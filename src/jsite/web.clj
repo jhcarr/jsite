@@ -1,4 +1,5 @@
 (ns jsite.web
+  (:use [net.cgrand.enlive-html])
   (:require [compojure.core :refer [defroutes GET PUT POST DELETE ANY]]
             [compojure.handler :refer [site]]
             [compojure.route :as route]
@@ -20,6 +21,15 @@
       (session/wrap-session)
       (basic/wrap-basic-authentication authenticated?)))
 
+(defn default-layout
+  "Wraps an argument with a valid site page."
+  [body]
+  (->> body
+       (html)
+       (content)
+       (at (html-resource "jsite/views/layout.html") [:#main])
+       (emit*)))
+
 (defroutes app
   (ANY "/repl" {:as req}
        (drawbridge req))
@@ -27,6 +37,8 @@
        {:status 200
         :headers {"Content-Type" "text/plain"}
         :body (pr-str ["Hello" :from 'Heroku])})
+  (GET "/magic" []
+       (default-layout "Greetings from the views directory!"))
   (ANY "*" []
        (route/not-found (slurp (io/resource "404.html")))))
 
