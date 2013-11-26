@@ -1,5 +1,7 @@
 (ns jsite.web
-  (:use [net.cgrand.enlive-html])
+  (:use [net.cgrand.enlive-html]
+        [jsite.views.resume :only (make-resume-page)]
+        [jsite.views.contact :only (make-contact-page)])
   (:require [compojure.core :refer [defroutes GET PUT POST DELETE ANY]]
             [compojure.handler :refer [site]]
             [compojure.route :as route]
@@ -30,11 +32,23 @@
        (at (html-resource "jsite/views/layout.html") [:#main])
        (emit*)))
 
+(defn html-layout
+  "Wraps html arguments with a valid site page."
+  [path-to-html]
+  (->> path-to-html
+       (html-resource)
+       (content)
+       (at (html-resource "jsite/views/layout.html") [:#main])
+       (emit*)))
+
 (defroutes app
   (ANY "/repl" {:as req}
        (drawbridge req))
-  (GET "/" []
-       (default-layout "Root page."))
+  (GET "/" [] (html-layout "jsite/views/home.html"))
+  (GET "/schedule" [] (html-layout "jsite/views/schedule.html"))
+  (GET "/contact" [] (make-contact-page))
+  (GET "/resume" [] (make-resume-page))
+  (GET "/about" [] (html-layout "jsite/views/about.html"))  
   (route/resources "/")
   (route/not-found (slurp (io/resource "404.html")))
   )
