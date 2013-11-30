@@ -41,14 +41,25 @@
        (at (html-resource "jsite/views/layout.html") [:#main])
        (emit*)))
 
+
+(defn tab-layout
+  [path-to-html selector]
+  (emit* (at (html-resource "jsite/views/layout.html")
+             [:li#home-tab]
+             (set-attr :class nil)
+             [:div#main]
+             (content (html-resource path-to-html))
+             [selector]
+             (set-attr :class "active"))))
+
 (defroutes app
   (ANY "/repl" {:as req}
        (drawbridge req))
   (GET "/" [] (html-layout "jsite/views/home.html"))
   (GET "/schedule" [] (html-layout "jsite/views/schedule.html"))
-  (GET "/contact" [] (make-contact-page))
-  (GET "/resume" [] (make-resume-page))
-  (GET "/about" [] (html-layout "jsite/views/about.html"))  
+  (GET "/contact" [] (tab-layout "jsite/views/contact.html" :li#contact-tab))
+  (GET "/resume" [] (tab-layout "jsite/views/resume.html" :li#resume-tab))
+  (GET "/about" [] (tab-layout "jsite/views/about.html" :li#about-tab))  
   (route/resources "/")
   (route/not-found (slurp (io/resource "404.html")))
   )

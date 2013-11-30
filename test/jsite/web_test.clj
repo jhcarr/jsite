@@ -1,6 +1,7 @@
 (ns jsite.web-test
   (:use ring.mock.request
-        [net.cgrand.enlive-html])
+        [net.cgrand.enlive-html]
+        [jsite.views.contact :only (make-contact-page)])
   (:require [clojure.test :refer :all]
             [jsite.web :refer :all]))
 
@@ -23,6 +24,11 @@
                   (content)
                   (at (html-resource "jsite/views/layout.html") [:#main])
                   (emit*)))))))
+
+(deftest test-tab-layout
+  (testing "input tuple of page source and nil value: expect default site page."
+    (is (= (tab-layout "jsite/views/contact.html" :li#contact-tab)
+           (make-contact-page)))))
 
 (deftest test-app
   (testing "input all valid routes: expect 200 status"
