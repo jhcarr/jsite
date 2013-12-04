@@ -1,6 +1,7 @@
 # jsite
 
-A personal website for Justin Carr
+A personal website for Justin Carr.
+
 Jsite is written as a [Heroku](http://www.heroku.com) web app using Compojure.
 
 Thank you to everyone who generously maintains the free and open source tools used to make this project. You make the internet awesome.
